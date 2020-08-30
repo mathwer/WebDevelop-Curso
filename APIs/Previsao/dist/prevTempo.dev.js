@@ -1,12 +1,17 @@
 "use strict";
 
-//https://api.openweathermap.org/data/2.5/weather?q=Rio de Janeiro&appid=567a442f6a0edc723704abc0eb1521d7&units=metric&lang=pt_br
 var express = require('express');
 
 var https = require('https');
 
 var bodyParser = require('body-parser');
 
+var config = require(__dirname + '/config.js'); //Para não mostrar a chave da API 
+
+
+var part1 = config.parte6;
+var part2 = config.parte3;
+var part3 = config.parte5;
 var app = express();
 app.use(bodyParser.urlencoded({
   extended: true
@@ -16,7 +21,7 @@ app.get('/', function (req, res) {
 });
 app.post('/', function (req, res) {
   var query = req.body.cityName;
-  var apiKey = '567a442f6a0edc723704abc0eb1521d7';
+  var apiKey = part1 + part2 + part3;
   var unit = 'metric';
   var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + query + '&appid=' + apiKey + '&units=' + unit + '&lang=pt_br';
   https.get(url, function (response) {
