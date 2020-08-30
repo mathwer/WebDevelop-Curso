@@ -33,9 +33,6 @@ app.post('/BMI', function(req, res){
 })
 
 
-
-
-
 app.listen(4000, function(){
     console.log('Funcionando! Ouvindo a porta 4000!')
 })
