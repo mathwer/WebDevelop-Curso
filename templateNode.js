@@ -6,7 +6,9 @@ const bodyParser = require('body-parser')
 
 const app = express()
 
-app.use('view engine', 'ejs')
+app.use(bodyParser.urlencoded({extended: true}))
+
+//app.use('view engine', 'ejs')  //Caso vá usar o EJS para páginas não estáticas
 
 app.get('/', function (req, res) { 
     console.log('Funcionando')
