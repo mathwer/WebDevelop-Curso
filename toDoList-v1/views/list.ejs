@@ -5,25 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Tarefas</title>
+    <link rel="stylesheet" href="CSS/styles.css">
 </head>
 
 <body>
-
-    <h1>Lista de <%= tipoDeDia %> !</h1>
-
-    <ul>
-        <li>Comer muuito</li>
-        <!-- <li> <%= itemNovo %> </li> -->
+    <div class="box" id="heading">
+        <h1>Lista de <%= tipoDeDia %> !</h1>
+    </div>
+    <div class="box">
         <% for(i=0; i<(itemNovo.length); i++){ %>
-           <li> <%= itemNovo[i] %> </li>
+        <div class='item'>
+            <input type="checkbox">
+            <p> <%= itemNovo[i] %> </p>
+        </div>
         <% } %>
 
-    </ul>
+        <form action="/" method="post" class='item'>
+            <input type="text" name="atividade" placeholder='Novo item' autocomplete="off">
+            <button type="submit">+</button>
+        </form>
 
-    <form action="/" method="post">
-        <input type="text" name="atividade">
-        <button type="submit">Adicionar</button>
-    </form>
+    </div>
+
+    
 </body>
 
 </html>
