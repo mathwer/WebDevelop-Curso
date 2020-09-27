@@ -1,0 +1,9 @@
+● mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
+     Active: inactive (dead)
+       Docs: https://docs.mongodb.org/manual
+
+set 27 17:30:33 Matheus-ubuntu systemd[1]: Started MongoDB Database Server.
+set 27 17:36:36 Matheus-ubuntu systemd[1]: mongod.service: Succeeded.
+set 27 17:37:13 Matheus-ubuntu systemd[1]: [0;1;39m[0;1;31m[0;1;39m/lib/systemd/system/mongod.service:11: PIDFile= references a path below legacy directory /var/run/, updating /var/run/mongodb/mongod.pid → /run/mongodb/mongod.pid; please update the unit file accordingly.[0m
+set 27 17:37:40 Matheus-ubuntu systemd[1]: [0;1;39m[0;1;31m[0;1;39m/lib/systemd/system/mongod.service:11: PIDFile= references a path below legacy directory /var/run/, updating /var/run/mongodb/mongod.pid → /run/mongodb/mongod.pid; please update the unit file accordingly.[0m
