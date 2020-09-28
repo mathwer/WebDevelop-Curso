@@ -1,33 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tarefas</title>
-    <link rel="stylesheet" href="CSS/styles.css">
-</head>
-
-<body>
-    <div class="box" id="heading">
-        <h1>Lista de <%= tipoDeDia %> !</h1>
+<%- include('header'); -%>
+<div class="box" id="heading">
+    <h1>Lista de <%= nomeDaLista %></h1>
+</div>
+<div class="box">
+    <% for(i=0; i<(itemNovo.length); i++){ %>
+    <div class='item'>
+        <input type="checkbox">
+        <p> <%= itemNovo[i] %> </p>
     </div>
-    <div class="box">
-        <% for(i=0; i<(itemNovo.length); i++){ %>
-        <div class='item'>
-            <input type="checkbox">
-            <p> <%= itemNovo[i] %> </p>
-        </div>
-        <% } %>
+    <% } %>
 
-        <form action="/" method="post" class='item'>
-            <input type="text" name="atividade" placeholder='Novo item' autocomplete="off">
-            <button type="submit">+</button>
-        </form>
+    <form action="/" method="post" class='item'>
+        <input type="text" name="atividade" placeholder='Novo item' autocomplete="off">
+        <button type="submit">+</button>
+    </form>
 
-    </div>
+</div>
 
-    
-</body>
-
-</html>
+<%- include('footer'); -%>
