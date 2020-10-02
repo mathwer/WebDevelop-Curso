@@ -2,47 +2,94 @@
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const date = require(__dirname + "/date.js");
+const mongoose = require('mongoose')
 
 const app = express();
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static("public"));
 
-const items = ["Buy Food", "Cook Food", "Eat Food"];
-const workItems = [];
 
-app.get("/", function(req, res) {
+//------------------- Database ------------------------
 
-const day = date.getDate();
-
-  res.render("list", {listTitle: day, newListItems: items});
-
+mongoose.connect("mongodb://localhost:27017/todolistDb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
 
-app.post("/", function(req, res){
+const itemSchema = {
+  nome: String
+}
 
-  const item = req.body.newItem;
+const Item = mongoose.model('Item', itemSchema)
 
-  if (req.body.list === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
-  } else {
-    items.push(item);
-    res.redirect("/");
-  }
+const Item1 = new Item({
+  nome: 'Bem vindo a sua lista de tarefas'
+})
+const Item2 = new Item({
+  nome: 'Clique no botão + para adicionar itens'
+})
+const Item3 = new Item({
+  nome: '<----- Clique aqui para deletar itens'
+})
+
+const itensPadrao = [Item1, Item2, Item3]
+
+
+
+// ------------ Direcionamento Express ----------
+app.get("/", function (req, res) {
+
+  Item.find(function (err, itens) {
+
+    if (itensPadrao.length === 0) {
+      Item.insertMany(itensPadrao, function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('Itens salvos no database')
+        }
+      })
+      res.redirect('/')
+    }
+    else{
+      res.render("list", {
+        listTitle: 'Hoje',
+        newListItems: itens
+      });
+    }    
+  })
+})
+
+
+app.post("/", function (req, res) {
+
+  const nomeDoItem = req.body.newItem;
+
+  const itemNovo = new Item({
+    nome: nomeDoItem
+  })
+
+  itemNovo.save(function (err){})
+  res.redirect('/')
 });
 
-app.get("/work", function(req,res){
-  res.render("list", {listTitle: "Work List", newListItems: workItems});
+app.get("/work", function (req, res) {
+  res.render("list", {
+    listTitle: "Work List",
+    newListItems: workItems
+  });
 });
 
-app.get("/about", function(req, res){
+app.get("/about", function (req, res) {
   res.render("about");
 });
 
-app.listen(3000, function() {
-  console.log("Server started on port 3000");
+
+app.listen(3000, function () {
+  console.log("Servidor iniciado na porta 3000");
 });
