@@ -46,7 +46,7 @@ app.get("/", function (req, res) {
 
   Item.find(function (err, itens) {
 
-    if (itensPadrao.length === 0) {
+    if (itens.length === 0) {
       Item.insertMany(itensPadrao, function (err) {
         if (err) {
           console.log(err)
@@ -73,10 +73,20 @@ app.post("/", function (req, res) {
   const itemNovo = new Item({
     nome: nomeDoItem
   })
-
   itemNovo.save(function (err){})
   res.redirect('/')
 });
+
+app.post("/delete", function (req, res){
+  console.log(req.body) 
+
+  const id = req.body.checkbox
+
+  Item.deleteOne({_id: id}, function (err){})
+
+  res.redirect('/')
+})
+
 
 app.get("/work", function (req, res) {
   res.render("list", {
