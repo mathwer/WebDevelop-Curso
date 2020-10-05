@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose')
+const _ = require('lodash')
 
 const app = express();
 
@@ -26,7 +27,7 @@ const itemSchema = {
 }
 
 const listSchema = {
-  nome: String, 
+  nome: String,
   itens: [itemSchema]
 }
 
@@ -62,13 +63,12 @@ app.get("/", function (req, res) {
         }
       })
       res.redirect('/')
-    }
-    else{
+    } else {
       res.render("list", {
         listTitle: 'Hoje',
         newListItems: itens
       });
-    }    
+    }
   })
 })
 
@@ -81,49 +81,72 @@ app.post("/", function (req, res) {
     nome: nomeDoItem
   })
 
-  if (nomeDaLista === 'Hoje'){  //Lista padrão
-    itemNovo.save(function (err){})
+  if (nomeDaLista === 'Hoje') { //Lista padrão
+    itemNovo.save(function (err) {})
     res.redirect('/')
   } else { //Lista Customizada
-    Lista.findOne({nome: nomeDaLista}, function (err, lista){
+    Lista.findOne({
+      nome: nomeDaLista
+    }, function (err, lista) {
       lista.itens.push(itemNovo)
-      lista.save(function (err){
-      res.redirect('/' + nomeDaLista)
+      lista.save(function (err) {
+        res.redirect('/' + nomeDaLista)
       })
     })
   }
-  
+
 });
 
-app.post("/delete", function (req, res){
-  console.log(req.body) 
-
+app.post("/delete", function (req, res) {
   const id = req.body.checkbox
+  const nomeDaLista = req.body.nomeDaLista
 
-  Item.deleteOne({_id: id}, function (err){})
+  if (nomeDaLista === 'Hoje') {
+    Item.deleteOne({
+      _id: id
+    }, function (err) {})
+    res.redirect('/')
+  } else {
+    Lista.findOneAndUpdate({
+      nome: nomeDaLista
+    }, {
+      $pull: {
+        itens: {
+          _id: id
+        }
+      }
+    }, function (err, lista) {
+      res.redirect('/' + nomeDaLista)
+    })
 
-  res.redirect('/')
+  }
+
 })
 
 // --------------------- Lista customizada -------------------
 
-app.get('/:nomeDaLista', function (req, res){
-  const nomeDaLista = req.params.nomeDaLista
+app.get('/:nomeDaLista', function (req, res) {
+  
+  const nomeDaLista = _.capitalize(req.params.nomeDaLista)
 
-  Lista.findOne({nome: nomeDaLista}, function (err, lista){
-    
-    if(!lista){
+  Lista.findOne({
+    nome: nomeDaLista
+  }, function (err, lista) {
+
+    if (!lista) {
       const lista = new Lista({
         nome: nomeDaLista,
         itens: itensPadrao
       })
-      lista.save(function (err){
-        res.redirect('/' + nomeDaLista) 
+      lista.save(function (err) {
+        res.redirect('/' + nomeDaLista)
+      })
+    } else {
+      res.render('list', {
+        listTitle: nomeDaLista,
+        newListItems: lista.itens
       })
     }
-    else{
-      res.render('list', {listTitle: nomeDaLista, newListItems: lista.itens})
-    }    
   })
 })
 
