@@ -25,6 +25,13 @@ const itemSchema = {
   nome: String
 }
 
+const listSchema = {
+  nome: String, 
+  itens: [itemSchema]
+}
+
+const Lista = mongoose.model("Lista", listSchema)
+
 const Item = mongoose.model('Item', itemSchema)
 
 const Item1 = new Item({
@@ -65,16 +72,27 @@ app.get("/", function (req, res) {
   })
 })
 
-
 app.post("/", function (req, res) {
 
   const nomeDoItem = req.body.newItem;
+  const nomeDaLista = req.body.list
 
   const itemNovo = new Item({
     nome: nomeDoItem
   })
-  itemNovo.save(function (err){})
-  res.redirect('/')
+
+  if (nomeDaLista === 'Hoje'){  //Lista padrão
+    itemNovo.save(function (err){})
+    res.redirect('/')
+  } else { //Lista Customizada
+    Lista.findOne({nome: nomeDaLista}, function (err, lista){
+      lista.itens.push(itemNovo)
+      lista.save(function (err){
+      res.redirect('/' + nomeDaLista)
+      })
+    })
+  }
+  
 });
 
 app.post("/delete", function (req, res){
@@ -87,14 +105,30 @@ app.post("/delete", function (req, res){
   res.redirect('/')
 })
 
+// --------------------- Lista customizada -------------------
 
-app.get("/work", function (req, res) {
-  res.render("list", {
-    listTitle: "Work List",
-    newListItems: workItems
-  });
-});
+app.get('/:nomeDaLista', function (req, res){
+  const nomeDaLista = req.params.nomeDaLista
 
+  Lista.findOne({nome: nomeDaLista}, function (err, lista){
+    
+    if(!lista){
+      const lista = new Lista({
+        nome: nomeDaLista,
+        itens: itensPadrao
+      })
+      lista.save(function (err){
+        res.redirect('/' + nomeDaLista) 
+      })
+    }
+    else{
+      res.render('list', {listTitle: nomeDaLista, newListItems: lista.itens})
+    }    
+  })
+})
+
+
+// ----------------- Sobre ------------------
 app.get("/about", function (req, res) {
   res.render("about");
 });
