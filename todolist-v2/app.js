@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose')
 const _ = require('lodash')
+const config = require(__dirname + '/config.js')
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use(express.static("public"));
 
 //------------------- Database ------------------------
 
-mongoose.connect("mongodb://localhost:27017/todolistDb", {
+mongoose.connect(config.mongoDB + "/todolistDb", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
